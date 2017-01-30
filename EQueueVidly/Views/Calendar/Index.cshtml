@@ -1,0 +1,526 @@
+﻿@using Microsoft.AspNet.Identity
+@model EQueueVidly.Models.Resource
+
+@{
+    ViewBag.Title = "Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Schedule</h2>
+
+<div class="row">
+    <div id="calendar" data-url="@Url.Action("GetScheduleEvents", "Calendar")"></div>
+</div>
+
+
+<!-- Modal popup to edit an event record -->
+<div class="modal" id="editSelectedModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" class="btn pull-right">Cancel</a>
+                <a href="#" class="btn btn-primary pull-right" id="submitButton">Save</a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Title</div>
+                        <div class="col-md-8"><input id="title" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Date/Time Scheduled</div>
+                        <div class="col-md-6">
+                            <div class='input-group date datetimepicker1'>
+                                <input id="datescheduled" type='text' class="form-control datetimepicker1"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">From/To</div>
+                        <div class="col-md-6">
+                            <div class='input-group date datetimepicker2'>
+                                <input id="time_start" type='text' class="form-control datetimepicker2" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                            <div class='input-group date datetimepicker3'>
+                                <input id="time_end" type='text' class="form-control datetimepicker3" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Duration(min)</div>
+                        <div class="col-md-8"><input id="duration" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Repeat</div>
+                        <div class="col-md-8">
+                            <div id="repeatCRONEdit"></div>
+                        </div> <!-- auto populates from JS below -->
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Status</div>
+                        <div class="col-md-8">
+                            <!-- you need to decide on your own status types and set defaults -->
+                            <select id="cboStatus">
+                                <option value="statusScheduled">Scheduled</option>
+                                <option value="statusComplete">Complete</option>
+                                <option value="statusOverdue">Overdue</option>
+                                <option value="statusCanceled">Canceled</option>
+                                <option value="statusUnknown">Unknown</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Notes</div>
+                        <div class="col-md-8"><textarea id="notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal popup to create a new event record -->
+<div class="modal" id="newSelectedModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" class="btn pull-right">Cancel</a>
+                <a href="#" class="btn btn-primary pull-right" id="newsubmitButton">Save</a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Title</div>
+                        <div class="col-md-8">
+                            <input id="newtitle" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Date/Time Scheduled</div>
+                        <div class="col-md-6">
+                            <div class='input-group date datetimepicker1'>
+                                <input id="newStartDate" type='text' class="form-control datetimepicker1"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar glyphicon-nonescaped"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Duration(Min)</div>
+                        <div class="col-md-8"><input id="newduration" type="text" /></div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div class="col-md-12">
+                        <div class="col-md-4">Time limit(Min)</div>
+                        <div class="col-md-8"><input id="newtimelimit" type="text" /></div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    @*<script src="~/Scripts/moment.js"></script>
+    <link href="~/Content/jquery-ui.css" rel="stylesheet"/>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <link href="~/Content/fullcalendar.css" rel="stylesheet"/>
+    <script src="~/Scripts/fullcalendar.js"></script>
+    <link href="~/Content/scheduler.css" rel="stylesheet"/>
+    <script src="~/Scripts/scheduler.js"></script>
+    <link href="~/Content/datepicker.css" rel="stylesheet"/>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    <link href="~/Content/jquery-cron.css" rel="stylesheet"/>
+    <script src="~/Scripts/jquery-cron.js"></script>*@
+
+    <script>
+
+        // static vars
+        var TeachersList = [];
+
+        var Authorized = false;
+        var isTeacher = false;
+
+        var statusScheduled = '#e0cc7d';
+        var statusComplete = '#83898e';
+        var statusOverdue = '#ff6a00';
+        var statusUnknown = '#CCCCCC';
+        var statusCanceled = '#CCCCCC';
+
+        var SelectedEvent; // the selected event object
+        var SelectedID; // the selected event ID
+
+
+        // dom init
+        $(function() {
+            @{
+                if (User.Identity.IsAuthenticated)
+                {
+                    @:Authorized = true;
+                    if (User.IsInRole("Teacher"))
+                    {
+                        @:isTeacher = true;   
+                    }
+                }
+            }
+            GetTeachers();
+            LoadAndRenderCalendar();
+
+            //Changing format to e.g.: 11/Mar/2016 13:45
+            $('.datetimepicker1').datetimepicker({ format: 'DD/MMM/YYYY HH:mm' });
+            /*$('#repeatCRON').cron();
+            $('#repeatCRONEdit').cron()*/;
+
+
+        });
+
+        // wrapper method to send a form POST back to the server so that we dont leave an ugly location title every time we change resource view
+        function post(path, params, method) {
+            var form = document.createElement("form");
+            form.setAttribute("method", method);
+            form.setAttribute("action", path);
+
+            for (var key in params) {
+                if (params.hasOwnProperty(key)) {
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", key);
+                    hiddenField.setAttribute("value", params[key]);
+                    form.appendChild(hiddenField);
+                }
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+
+        function LoadResources() {
+            $('#calendar').fullCalendar('refetchResources');
+        }
+
+        function LoadAndRenderCalendar() {
+            ShowCalendar();
+            $('#calendar').fullCalendar('render');
+        }
+
+        function ShowCalendar() {
+            $('#calendar').fullCalendar({
+                schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+                theme: false,
+                /*resourceAreaWidth: 230,*/
+                groupByDateAndResource: false,
+                editable: true,
+                aspectRatio: 1.8,
+                scrollTime: '08:00',
+                timezone: 'local',
+                eventResize: function(event, delta, revertFunc, jsEvent, ui, view) {
+                    if (confirm("Confirm resize?")) {
+                        UpdateEventMove(event, view.type);
+                    } else revertFunc();
+
+                },
+                // click blank slot for new appt!
+                dayClick: function(date, jsEvent, view, resourceObj) {
+                    var teacherResource = TeachersList.find(
+                        function(teacher) {
+                            return teacher.teacherId == resourceObj.id;
+                        }
+                    );
+                    if (Authorized && (resourceObj.id == '@User.Identity.GetUserId()')) {
+
+                        if (teacherResource != undefined) {
+                            $('#newSelectedModal').modal();
+                            $('#newtitle').val('');
+                            $('#newdatescheduled').val(getFormattedDate(date));
+                            $('#newduration').val(30); // assuming default 30 minutes appointment
+                            //  $('#newclient').val(resourceObj.title);
+                        }
+                    } else {
+                        alert('Please Choose your own row'); // they clicked a branch-office header ... NB! ... you will need to do similar functionality for equipment or any other view you implement
+                    }
+
+                    // here, implement for equipment view, depending on what kind of headers (or none) you have.
+                },
+                eventClick: function(calEvent, jsEvent, view) {
+                    SelectedEvent = calEvent;
+                    SelectedID = calEvent.id;
+                },
+                header: {
+                    left: (Authorized && isTeacher) ? 'delete,edit,today prev,next' : (Authorized && !isTeacher) ? 'join,today prev,next' : 'today prev,next',
+                    center: 'title',
+                    right: 'timelineDay,agendaWeek,day,month'
+                },
+                defaultView: 'timelineDay',
+                views:
+                {
+                    timelineDay: {
+                        buttonText: 'Timeline',
+                        slotDuration:
+                            '00:15'
+                    },
+                    agendaWeek: {
+                        type: 'agendaWeek',
+                        duration:
+                        {
+                            days: 7
+                        }
+                    }
+                },
+                resourceAreaWidth: '25%',
+                customButtons:
+                {
+                    // defined above in 'header'
+                    delete:
+                    {
+                        text: 'Delete selected',
+                        click:
+                            function() {
+                                if (SelectedEvent != null) {
+                                    alert('delete the selected event: ' + SelectedEvent.title);
+                                    $('#calendar').fullCalendar('removeEvents', SelectedEvent.id);
+                                    DeleteEvent(SelectedEvent, null);
+                                } else alert('Please select an event first!');
+                            }
+                    },
+                    edit: {
+                        text: 'Edit selected',
+                        click:
+                            function() {
+                                if (SelectedEvent != null) {
+                                    $('#editSelectedModal').modal();
+                                    // auto load the Employee/equiopmen/cleint dropboxes for example
+                                    $('#cboEmployees').empty();
+                                    $('#cboEquipment').empty();
+                                    var option = '';
+                                    TeachersList.forEach(function(item) {
+                                        option += '<option value="' + item.TeacherID + '">' + item.FullName + '</option>';
+                                    })
+                                    $('#cboEmployees').append(option);
+
+                                    option = '';
+                                    EquipmentList.forEach(function(item) {
+                                        option += '<option value="' + item.id + '">' + item.title + '</option>';
+                                    })
+                                    $('#cboEquipment').append(option);
+
+                                    option = '';
+                                    ClientList.forEach(function(item) {
+                                        option += '<option value="' + item.ClientID + '">' + item.Name + '</option>';
+                                    })
+                                    $('#cboClient').append(option);
+
+                                    $('#title').val(SelectedEvent.title);
+                                    $('#datescheduled').val(getFormattedDate(SelectedEvent.start));
+                                    $('#duration').val(SelectedEvent.duration);
+                                    $('#cboEquipment').val(SelectedEvent.equipmentId);
+                                    $('#branch').val(SelectedEvent.branchId);
+                                    $('#cboClient').val(SelectedEvent.clientId);
+                                    $('#notes').val(SelectedEvent.notes);
+                                    $('#cboEmployees').val(SelectedEvent.EmployeeId);
+                                    $('#cboStatus').val(SelectedEvent.statusString);
+                                    if (SelectedEvent.repeat != null)
+                                        $('#repeatCRONEdit').cron("value", SelectedEvent.repeat);
+                                    else
+                                        $('#repeatCRONEdit').cron("value", "* * * * *");
+                                } else alert('Please select an event first!');
+                            }
+                    }
+                },
+                resourceLabelText: "Teachers", //important! ... this is set server-side when the resource view is changed.
+                resources: // this is where the resource loading for laying out the page is triggered from
+                {
+                    url: '/api/resources',
+                    type:
+                        'GET'
+                },
+                eventSources: [
+                    {
+                        url: $('#calendar').data('url'),
+                        error: function() {
+                            alert('there was an error while fetching resource data!');
+                        }
+
+                    }
+                ],
+            });
+        };
+
+        // some helper functions
+
+        function getFormattedDate(date) {
+            var today = new Date(date);
+            var dd = today.getDate();
+            var mm = today.getMonth(); //January is 0!
+            var hh = today.getHours();
+            var min = today.getMinutes();
+            if (hh == 0)
+                hh = '00';
+            if (min == 0)
+                min = '00';
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            var month = new Array();
+            month[0] = "Jan";
+            month[1] = "Feb";
+            month[2] = "Mar";
+            month[3] = "Apr";
+            month[4] = "May";
+            month[5] = "Jun";
+            month[6] = "Jul";
+            month[7] = "Aug";
+            month[8] = "Sep";
+            month[9] = "Oct";
+            month[10] = "Nov";
+            month[11] = "Dec";
+
+            var today = dd + '/' + month[mm] + '/' + yyyy + ' ' + hh + ':' + min;
+            return today;
+        }
+
+        $('#submitButton').on('click', function(e) {
+            e.preventDefault();
+            SelectedEvent.title = $('#title').val();
+            SelectedEvent.duration = $('#duration').val();
+            SelectedEvent.notes = $('#notes').val();
+            SelectedEvent.statusString = $('#cboStatus').val();
+            SelectedEvent.repeat = $('#repeatCRONEdit').cron("value");
+            UpdateEventMove(SelectedEvent, null);
+            doSubmit();
+        });
+
+        $('#newsubmitButton').on('click', function(e) {
+            e.preventDefault();
+
+            $("#newSelectedModal").modal('hide');
+
+            var endTime = new Date($('#newStartDate').val());
+            endTime.setMinutes(endTime.getMinutes() + parseInt($('#newduration').val()));
+
+            /**/
+            var appointment = {
+                title: $('#newtitle').val(),
+                start: new Date($('#newStartDate').val()),
+                end: endTime,
+                duration: $('#newduration').val(),
+                timeLimit: $('#newtimelimit').val()
+            }
+
+            UpdateEventMove(appointment, null);
+            $("#calendar").fullCalendar('refresh');
+            $('#calendar').fullCalendar('refetchEvents');
+        });
+
+        function doSubmit() {
+            $("#editSelectedModal").modal('hide');
+
+            alert("submitted");
+
+            $("#calendar").fullCalendar('renderEvent', SelectedEvent, true);
+            $('#calendar').fullCalendar('refetchEvents');
+        }
+
+        function UpdateEventMove(appointment, view) {
+            var dataRow = {
+                'appointment': appointment
+            }
+
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PushAppointment", "Calendar")' /*"/api/appointments/push"*/,
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(dataRow),
+                success: function() {
+                    alert("success");
+                },
+                error: function() {
+                    alert("error");
+                }
+            });
+        }
+
+        function DeleteEvent(event, view) {
+            event.employeeId = event.resourceId;
+            var dataRow = {
+                'Event': event
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "/Home/DeleteEvent",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(dataRow)
+            });
+        }
+
+        function ClearLists() {
+            TeachersList = [];
+
+        }
+
+
+        // use this function to get a local list of employees/branches/equipment etc and populate arrays as appropriate.
+        function GetTeachers() {
+            $.ajax({
+                url: '/api/teachers',
+                type: 'GET',
+                cache: false,
+                success: function(resultData) {
+                    ClearLists();
+                    TeachersList = resultData;
+                },
+                error: function() {
+                    alert("getTeacher Error");
+                }
+            });
+        };
+
+
+    </script>
+}

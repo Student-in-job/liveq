@@ -1,0 +1,188 @@
+﻿@using EQueueVidly.Models
+@model EQueueVidly.Models.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_CleanPage.cshtml";
+    ViewBag.Title = "Register";
+}
+
+<div class="row main">
+    <div class="panel-heading">
+        <div class="panel-title text-center">
+            <h1 class="title">LiveQ</h1>
+            <hr style="width: 10%;" />
+        </div>
+    </div>
+    <div class="main-login main-center">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.FirstName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.LastName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-sm-2 control-label"})
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-sm-7 control-label totop" })
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Phone, new { @class = "col-sm-2 control-label"})
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon input-sm"><i class="fa fa-phone fa" aria-hidden="true"></i></span>
+                        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control input-sm" })
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Role, new { @class = "col-sm-2 control-label", @style = "display: block;" })
+                <div class="col-sm-10 radio">
+                    <label><input class="teacher" onclick="show_modal()" type="radio" name="Role" id="Role" value="Teacher" />Teacher</label>
+                    <label><input type="radio" name="Role" id="Role" value="Student">Student</label>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-sm btn-block login-button" value="Register">Register</button>
+            </div>
+            <div class="login-register">
+                <a href="@Url.Action("Login","Account")">Login</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            
+        });
+
+        
+
+        function show_modal() {
+            $('#ConfirmRoleModal').modal({ backdrop: 'static', keyboard: false });
+            document.getElementById("keyword").value = '';
+        }
+
+        function confirm() {
+            if (document.getElementById("keyword").value == '') {
+                $("#empty").show();
+            } else {
+                var dataRow = {
+                    'keyword': document.getElementById("keyword").value
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("Confirm", "Account")',
+                    data: dataRow,
+                    success: function (response) {
+                        if (response == 'True') {
+                            alert("valid");
+                            $('#ConfirmRoleModal').modal('hide');
+                            document.getElementById("keyword").value = '';
+                        } else {
+                            $("#invalid").show();
+                        }
+                    }
+                });
+            }
+        }
+
+        function change() {
+            $("#invalid").hide();
+            $("#empty").hide();
+        }
+
+        function cancel() {
+            $('.teacher').attr("checked", false);
+        }
+    </script>
+}
+
+<div id="ConfirmRoleModal" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="myModalLabel">Enter the secret key!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-offset-3">
+                        <div class="menu">
+                            <ul>
+                                <li id="invalid" style="display: none; color: red">Invalid keyword!</li>
+                                <li id ="empty" style="display: none; color: red">Enter the keyword please!</li>
+                            </ul>
+                        </div>
+                        <div class="input-group">
+
+                            <input type="password" id="keyword" class="form-control" placeholder="Keyword..." oninput="change()">
+                            <span class="input-group-btn">
+                                <button class="btn btn-secondary" type="button" onclick="confirm()">Submit</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

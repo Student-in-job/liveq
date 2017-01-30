@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+@model EQueueVidly.ViewModels.IndexViewModel
+
+    
+        <div class= "panel panel-success">
+            <div class="panel-heading" style="position: relative;">
+                <a href="@Url.Action("EditAccount")" style="position: absolute; right: 5px; top: 0px" class="btn btn-success btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                <h3 class="panel-title">@Model.FirstName @Model.LastName</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row" style="position: relative;">
+
+                    <img onerror="this.src = '@Url.Content("~/Content/images/profile/placeholder-user.png")'" style="position: relative; bottom: 20px;" src="@Url.Action("Photo", "Account", new {UserId = User.Identity.GetUserId()})" height="260" width="260" alt=" " class=" img-thumbnail img-responsive"/>
+                    <div style="color: darkslategray; position: absolute; left: 170px; bottom: 30px; background-color:lavender; padding: 0px 2px" class="pull-right ">
+                        <a href="@Url.Action("EditPhoto", "Manage")"><i class="fa fa-camera-retro fa-2x"></i></a>
+                    </div>
+                        
+
+                </div>
+
+                <div class="row" style="padding: 10px;">
+                    <p style="margin-bottom: 5px"> <span style="padding-left: 7px; padding-right: 7px"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>@Model.Email</p>
+                    <p style="margin-bottom: 5px"> <span style="padding-left: 7px; padding-right: 7px"><i class="fa fa-phone fa" aria-hidden="true"></i></span>@Model.Phone</p>
+                    <p style="margin-bottom: 5px">
+                        <span style="padding-left: 7px; padding-right: 7px"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                        [
+                        @if (Model.HasPassword)
+                        {
+                            @Html.ActionLink("Change your password", "ChangePassword")
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Create", "SetPassword")
+                        }
+                        ]
+                    </p>
+                </div>
+
+            </div>
+        </div>   
+
+

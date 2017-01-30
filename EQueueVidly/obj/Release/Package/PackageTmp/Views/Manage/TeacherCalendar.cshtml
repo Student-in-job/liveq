@@ -1,0 +1,344 @@
+﻿@using Microsoft.AspNet.Identity
+@model dynamic
+
+
+<div id='calendar'></div>
+
+
+    <div id="newSelectedModal" class="modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add new appointment</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="EventForm">
+                        <input type="hidden" id="eventID">
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for="eventtitle">Title</label>
+                            <input class="form-control" type="text" id="eventTitle"placeholder="Title here">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" eventdate">Appointment date</label>
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input class="form-control" type="text" id="eventDate">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" eventduration">Appointment length (minutes)</label>
+                            <input class="form-control" type="number" id="eventDuration" placeholder="120">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" timelimit">Time limit (minutes)</label>
+                            <input class="form-control" type="number" id="timeLimit" placeholder="15">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnPopupCancel" data-dismiss="modal" class="btn">Cancel</button>
+                    <button type="button" id="btnPopupSave" data-dismiss="modal" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="editSelectedModal" class="modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit appointment</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="editEventForm">
+                        <input type="hidden" id="editEventID">
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" editeventtitle">Title</label>
+                            <input class="form-control" type="text" id="editEventTitle" placeholder="Title here">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" editeventdate">Appointment date</label>
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input class="form-control" type="text" id="editEventDate">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" editeventduration">Appointment length (minutes)</label>
+                            <input class="form-control" type="number" id="editEventDuration" placeholder="120">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label for=" edittimelimit">Time limit (minutes)</label>
+                            <input class="form-control" type="number" id="editTimeLimit" placeholder="15">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnPopupCancel" data-dismiss="modal" class="btn">Cancel</button>
+                    <button type="button" id="btnPopupSaveEdit" data-dismiss="modal" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+<div id="InfoModal" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="myModalLabel">Appointment</h3>
+            </div>
+            <div class="modal-body">
+                <dl class="dl-horizontal">
+                    <dt id="teacher-name"></dt>
+                    <dd></dd>
+                    <dt>Beginning:</dt>
+                    <dd id="start"></dd>
+                    <dt>Finish:</dt>
+                    <dd id="end"></dd>
+                    <dt>Limit</dt>
+                    <dd id="limit">(Min)</dd>
+                    <dt>Total capacity</dt>
+                    <dd id="capacity"></dd>
+                    <dt>Attendees count:</dt>
+                    <dd id="attendees-count"></dd>
+                    <dt>Remaining amount:</dt>
+                    <dd id="remaining-amount"></dd>
+
+                </dl>
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button type="button" id="btnPopupCancel" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                <button type="button" id="details" data-dismiss="modal" class="btn btn-default">Details</button>
+                <button type="button" id="editEvent" data-dismiss="modal" class="btn btn-default">Edit</button>
+                <button type="button" id="delete" data-dismiss="modal" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@*@section scripts
+{
+    <script>
+        var selectedEvent;
+        $(document).ready(function() {
+            
+            alert("Doc ready");
+            $(function() {
+                $('#datetimepicker1').datetimepicker({ format: 'DD/MMM/YYYY HH:mm' });
+            });
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'today prev,next ',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                defaultView: 'agendaDay',
+                editable: false,
+                allDaySlot: false,
+                selectable: true,
+                slotMinutes: 15,
+                timezone: 'local',
+                events: "@Url.Action("GetEvents", "Teachers")",
+                eventClick: function(calEvent, jsEvent, view) {
+                    selectedEvent = calEvent;
+                    $('#InfoModal').modal();
+                    $('#myModalLabel')[0].innerHTML = calEvent.title;
+                    $("#start")[0].innerHTML = getFormattedDate(calEvent.start);
+                    $("#end")[0].innerHTML = getFormattedDate(calEvent.end);
+                    $('#limit')[0].innerHTML = calEvent.timeLimit;
+                    $('#capacity')[0].innerHTML = calEvent.capacity;
+                    $('#attendees-count')[0].innerHTML = calEvent.queueIiems;
+                    $('#remaining-amount')[0].innerHTML = calEvent.queueIiems - calEvent.capacity;
+                },
+                dayClick: function(date, allDay, jsEvent, view) {
+                    $('#eventTitle').val("");
+                    $('#eventDate').val(getFormattedDate(date));
+                    $('#newSelectedModal').modal();
+                },
+                customButtons: {
+                    delete: {
+                        text: 'Delete selected',
+                        click: function() {
+                            if (selectedEvent != null) {
+                                alert('delete the selected event: ' + selectedEvent.title);
+                                $('#calendar').fullCalendar('removeEvents', selectedEvent.id);
+                                DeleteEvent(selectedEvent, null);
+                            } else alert('Please select an event first!');
+                        }
+                    },
+                    edit: {
+                        text: 'Edit selected',
+                        click: function() {
+                            if (selectedEvent != null) {
+                                $('#editSelectedModal').modal();
+                                $('#editEventTitle').val(selectedEvent.title);
+                                $('#editEventId').val(selectedEvent.id);
+                                $('#editEventDate').val(getFormattedDate(selectedEvent.start));
+                                $('#editEventDuration').val(selectedEvent.duration);
+                                $('#editTimeLimit').val(selectedEvent.timeLimit);
+
+                            } else alert('Please select an event first!');
+                        }
+                    }
+                }
+
+            });
+
+
+
+        });
+
+        $('#btnPopupCancel').click(function() {
+            ClearPopupFormValues();
+            $('#popupEventForm').hide();
+        });
+
+        $('#details').click(function () {
+            window.location.href = '@Url.Action("Details","Appointments")' + "/" + selectedEvent.id;
+        });
+        $('#btnPopupSaveEdit').on('click', function(e) {
+            e.preventDefault();
+            var endTime = new Date($('#editEventDate').val());
+            endTime.setMinutes(endTime.getMinutes() + parseInt($('#editEventDuration').val()));
+            selectedEvent.title = $('#editEventTitle').val();
+            selectedEvent.start = new Date($('#editEventDate').val());
+            selectedEvent.end = endTime;
+            selectedEvent.duration = $('#editEventDuration').val();
+            selectedEvent.timeLimit = $('#editTimeLimit').val();
+            var dataRow = {
+                'appointment': selectedEvent
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditEvent", "Calendar")',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(dataRow),
+                success: function(response) {
+                    if (response == 'True') {
+                        $("#calendar").fullCalendar('renderEvent', selectedEvent, true);
+                        $('#calendar').fullCalendar('refetchEvents');
+                        alert('Event edited!');
+                    } else {
+                        alert('Error, could not save changes!');
+                    }
+                }
+            });
+        });
+
+        $('#btnPopupSave').click(function() {
+
+            $('#popupEventForm').hide();
+
+            var endTime = new Date($('#eventDate').val());
+            endTime.setMinutes(endTime.getMinutes() + parseInt($('#eventDuration').val()));
+
+            var appointment = {
+                title: $('#eventTitle').val(),
+                start: new Date($('#eventDate').val()),
+                end: endTime,
+                duration: $('#eventDuration').val(),
+                timeLimit: $('#timeLimit').val()
+            }
+            var dataRow = {
+                'appointment': appointment
+            }
+            ClearPopupFormValues();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SaveEvent", "Calendar")',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(dataRow),
+                success: function(response) {
+                    if (response == 'True') {
+                        $('#calendar').fullCalendar('refetchEvents');
+                        alert('New event saved!');
+                    } else {
+                        alert('Error, could not save event!');
+                    }
+                }
+            });
+            $('#calendar').fullCalendar('refresh');
+            $('#calendar').fullCalendar('refetchEvents');
+        });
+
+        function getFormattedDate(date) {
+            var today = new Date(date);
+            var dd = today.getDate();
+            var mm = today.getMonth(); //January is 0!
+            var hh = today.getHours();
+            var min = today.getMinutes();
+            if (hh == 0)
+                hh = '00';
+            if (min == 0)
+                min = '00';
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            var month = new Array();
+            month[0] = "Jan";
+            month[1] = "Feb";
+            month[2] = "Mar";
+            month[3] = "Apr";
+            month[4] = "May";
+            month[5] = "Jun";
+            month[6] = "Jul";
+            month[7] = "Aug";
+            month[8] = "Sep";
+            month[9] = "Oct";
+            month[10] = "Nov";
+            month[11] = "Dec";
+
+            var today = dd + '/' + month[mm] + '/' + yyyy + ' ' + hh + ':' + min;
+            return today;
+        }
+
+        function ClearPopupFormValues() {
+            $('#eventID').val("");
+            $('#eventTitle').val("");
+            $('#eventDuration').val("");
+            $('#timeLimit').val("");
+        }
+
+        function DeleteEvent(event, view) {
+            var dataRow = {
+                'AppointmentId': event.id
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteEvent", "Calendar")',
+                data: dataRow,
+                success: function(response) {
+                    if (response == 'True') {
+                        $('#calendar').fullCalendar('refetchEvents');
+                        alert('Event deleted!');
+                    } else {
+                        alert('Error, could not delete event!');
+                    }
+                }
+            });
+        }
+
+    </script>
+
+}*@
+

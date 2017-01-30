@@ -1,0 +1,265 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.hiden_block {
+     display: none;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+ 
+.scheduler_container{
+    width:100%;
+    height:600px;
+    border:1px solid #aeaeae;
+}
+
+/*Calendar*/
+
+#myModal .modal-dialog {
+        width: 70%;
+    }
+    /** Forces input to fill width of control column **/
+    .FillWide {
+        max-width: 800px;
+    }
+
+    .TextAlignLeft {
+        text-align: left;
+    }
+
+    p {
+        margin: 0 0 0px !important;
+    }
+
+    .modal-body {
+        margin-top: 5px;
+    }
+
+    .modal-header {
+        padding: 15px 15px 48px 15px;
+    }
+
+    #UnScheduledEvents .fc-event {
+        background-color: #fff !important;
+    }
+
+    #UnScheduledEvents .fc-event, .ui-widget .fc-event {
+        color: black !important;
+        font-size: medium !important;
+        border: inherit !important;
+    }
+
+    #UnScheduledEvents table {
+        width: 100% !important;
+    }
+
+    #external-events .fc-event {
+        background-color: #fff !important;
+    }
+
+    #external-events .fc-event, .ui-widget .fc-event {
+        color: black !important;
+        font-size: medium !important;
+        border-color: black !important;
+        padding: 11px 5px 8px 5px !important;
+        border-radius: 0px !important;
+    }
+
+    .bs-component {
+        position: relative;
+    }
+
+    .teacher-grid {
+        color: #404040;
+        text-transform: uppercase;
+        font-weight: 700;
+        position: relative;
+    }
+
+    .red-border-bottom:before {
+        position: absolute;
+        margin: auto;
+        z-index: 1;
+        content: "";
+        width: 75%;
+        height: 2px;
+        background: #e96656;
+        bottom: -9px;
+        left: 12.5%;
+    }
+/*registration style*/
+    .main {
+        margin-top: 70px;
+    }
+
+    h1.title { 
+	    font-size: 50px;
+	    font-family: 'Passion One', cursive; 
+	    font-weight: 400; 
+    }
+
+    .main-login{
+ 	background-color: #fff;
+    /* shadows and rounded borders */
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+
+    }
+
+    .main-center{
+ 	    margin-top: 30px;
+ 	    margin: 0 auto;
+ 	    max-width: 330px;
+        padding: 40px 40px;
+
+    }
+
+    .login-button{
+	    margin-top: 5px;
+    }
+
+    .login-register{
+	    font-size: 11px;
+	    text-align: center;
+    }
+
+    /*.lebel .totop {
+        text-align: left;
+    }*/
+
+    .row.flex-override {
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  /*justify-content: space-around;*/
+}
+.row.flex-override > .vertical-align-center {
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+.row.flex-override .vertical-align-center .valign-center {
+  align-self: center;
+}
+
+.navbar-image {
+  float: left;
+  padding: 10px 5px;
+}
+
+@media (min-width: 1200px) {
+    .container{
+        max-width: 970px;
+    }
+}
+
+.row.vertical-divider {
+  overflow: hidden;
+}
+.row.vertical-divider > div[class^="col-"] {
+  text-align: center;
+  padding-bottom: 100px;
+  margin-bottom: -100px;
+  border-left: 0.5px solid #F2F7F9;
+  border-right: 0.5px solid #F2F7F9;
+}
+.row.vertical-divider div[class^="col-"]:first-child {
+  border-left: none;
+}
+.row.vertical-divider div[class^="col-"]:last-child {
+  border-right: none;
+}
+/*
+    .table tr th {
+        max-width: 100px;
+        width: 123px !important;
+    }
+
+    .table tr td {
+        width: 123px !important;
+    }
+
+    .table thead tr {
+        display: flex;
+    }
+
+    .table thead tr th:nth-child(1) {
+        width: 38.5% !important;
+    }
+
+    .table thead tr th:nth-child(2) {
+    }
+
+    .table thead tr th:nth-child(3) {
+    }
+
+    .table tbody tr {
+        display: flex;
+    }
+
+
+
+
+    .table tbody tr td:nth-child(1) {
+        word-wrap: break-word;
+    }
+
+    .table tbody tr td:nth-child(2) {
+    }
+
+    .table tbody tr td:nth-child(3) {
+    }
+
+    .the_space {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+*/

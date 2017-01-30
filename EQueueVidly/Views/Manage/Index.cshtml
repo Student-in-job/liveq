@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNet.Identity
+@model EQueueVidly.ViewModels.IndexViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1></h1>
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+<div class="row">
+    <div class="col-md-3">
+        @Html.Partial("AcoountDetails", Model)
+    </div>
+    <div class="col-md-9">
+        @if (User.IsInRole("Teacher"))
+        {
+            @Html.Partial("TeacherCalendar")
+            @section scripts
+            {
+                @Html.Partial("TeacherCalendarScriptPartial") 
+            }
+        }
+        else
+        {
+            @Html.Partial("StudentCalendar")
+            @section scripts
+            {
+                @Html.Partial("StudentCalendarScriptPartial") 
+            }
+        }
+            
+    </div>
+
+</div>
+
+
+
+
+

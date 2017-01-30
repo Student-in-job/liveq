@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*<link type="text/css" rel="stylesheet" href="~/Content/themes/base/datepicker.css" />*@
+    
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/bootstrap-flatly")
+    @Styles.Render("~/Content/datepicker")
+    @Styles.Render("~/Content/jquery-ui")
+    @Styles.Render("~/Content/datatable")
+    @Styles.Render("~/Content/fullcalendar")
+    @Styles.Render("~/Content/toastr")
+    
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    @Html.Partial("NavBar")
+    <div class="container body-content" style="position: relative">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Ramazan</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Scripts.Render("~/bundles/toastr")
+    @Scripts.Render("~/bundles/respond")
+    @Scripts.Render("~/bundles/fullcalendar")
+    @RenderSection("scripts", required: false)
+    @RenderSection("styles", false);
+</body>
+</html>

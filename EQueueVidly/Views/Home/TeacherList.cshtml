@@ -1,0 +1,23 @@
+﻿@using System.Security.Policy
+@using Microsoft.AspNet.Identity
+@using PagedList.Mvc
+@model  PagedList.IPagedList<EQueueVidly.Models.Teacher>
+<div class="row " >
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-sm-6 text-center">
+            <a href="@Url.Action("Index", "Teachers", new {id = item.Id})">
+                <img onerror="this.src='@Url.Content("~/Content/images/profile/placeholder-user.png")'" class="img-circle" style="margin: 0 auto;" src="@Url.Action("Photo", "Account", new {UserId = item.account.Id})" height="200" width="200" alt="" />
+            </a>
+            <a href="@Url.Action("Index","Teachers", new{id=item.Id})">
+                <h5 class="teacher-grid red-border-bottom">
+                    @item.account.FirstName @item.account.LastName
+                </h5>
+            </a>
+                @*<small>Job Title</small>*@
+        </div>
+     }    
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+

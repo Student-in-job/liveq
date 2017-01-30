@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNet.Identity
+@model EQueueVidly.ViewModels.AppointmentDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1></h1><br/>
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="well bs-component">
+            <h4>@Model.Title</h4>
+            <ul>
+                <li>@Model.StartDate.Day/@Model.StartDate.Month/@Model.StartDate.Year</li>
+                <li>@Model.StartDate.Hour : @Model.StartDate.Minute / @Model.EndDate.Hour : @Model.EndDate.Minute</li>
+                <li>Time limit: @Model.TimeLimit minutes</li>
+                <li>Total capacity: @Model.Capacity</li>
+                <li>Attendees count: @Model.Attendees.Count</li>
+            </ul>
+        </div>
+        
+    </div>
+    <div class="col-md-8">
+        
+            @for (int i = 0; i < Model.Attendees.Count; i++)
+            {
+                <h5>
+                    @{ var counter = i + 1; }
+                    #@counter
+                    @Model.Attendees.ToArray()[i].FullName
+                </h5>
+                <div class="well bs-component" style="padding: 0px">
+                    <div class="row vertical-divider">
+                        <div class="col-xs-6" style="font-size: 24px; font-style: inherit">@Model.Attendees.ToArray()[i].Start.Hour : @Model.Attendees.ToArray()[i].Start.Minute</div>
+                        <div class="col-xs-6" style="font-size: 24px; font-style: inherit">@Model.Attendees.ToArray()[i].End.Hour : @Model.Attendees.ToArray()[i].End.Minute</div>
+                    </div>
+                </div>
+            }
+        
+        
+
+    </div>
+
+</div>
+   
