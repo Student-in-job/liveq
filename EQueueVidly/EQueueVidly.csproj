@@ -706,11 +706,7 @@
     <Content Include="Views\Manage\SetPassword.cshtml" />
     <Content Include="Views\Shared\NavBar.cshtml" />
     <Content Include="Views\Manage\EditAccount.cshtml" />
-    <Content Include="Views\Appointments\Create.cshtml" />
-    <Content Include="Views\Appointments\Edit.cshtml" />
     <Content Include="Views\Manage\TeacherCalendar.cshtml" />
-    <Content Include="Views\Appointments\Index.cshtml" />
-    <Content Include="Views\Appointments\Teachers.cshtml" />
     <Content Include="Scripts\jquery\jquery-3.1.1.min.map" />
     <Content Include="Scripts\jquery\jquery-3.1.1.slim.min.map" />
     <Content Include="Views\Attendees\QrCode.cshtml" />
@@ -730,8 +726,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\custom\" />
-    <Folder Include="Views\Attendee\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
